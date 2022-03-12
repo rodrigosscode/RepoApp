@@ -1,4 +1,4 @@
-package br.com.sscode.repoapp.repolist.ui.adapter
+package br.com.sscode.repoapp.repolist.presentation.ui.adapter.recyclerview
 
 import android.content.Context
 import android.view.LayoutInflater

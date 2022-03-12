@@ -44,7 +44,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
-
             android:textColor="@color/white"
             android:text="Autor"
             android:textSize="15sp"
@@ -59,7 +58,7 @@
             android:textColor="@color/white"
             android:drawablePadding="5dp"
             android:text="0"
-            android:textSize="16sp"
+            android:textSize="15sp"
             app:drawableStartCompat="@drawable/ic_star"
             app:layout_constraintStart_toStartOf="@id/item_author_name"
             app:layout_constraintTop_toBottomOf="@id/item_author_name" />
@@ -83,7 +82,7 @@
             android:layout_marginStart="5dp"
             android:drawablePadding="5dp"
             android:text="0"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="@color/white"
             app:drawableStartCompat="@drawable/ic_fork"
             app:layout_constraintStart_toEndOf="@id/separator"

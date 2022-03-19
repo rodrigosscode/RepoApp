@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import br.com.sscode.core.base.ui.BaseFragment
+import br.com.sscode.core.base.viewmodel.feature.resourceobserver.livedata.observeResource
 import br.com.sscode.repoapp.databinding.FragmentRepoListBinding
 import br.com.sscode.repoapp.repolist.presentation.ui.adapter.recyclerview.RepoListAdapter
 import br.com.sscode.repoapp.repolist.presentation.viewmodel.RepoListViewModel
@@ -32,9 +33,14 @@ class RepoListFragment : BaseFragment() {
     }
 
     private fun initObservers() {
-        viewModel.repos.observe(this, {
-            print("oba")
-        })
+        viewModel.repos.observeResource(this,
+            onSuccess = {
+
+            },
+            onError = {
+
+            }
+        )
     }
 
     private fun init() {

@@ -1,4 +1,4 @@
-package br.com.sscode.core.base.viewmodel.feature.resourceobserver.livedata
+package br.com.sscode.core.feature.viewmodel.resourceobserver.livedata
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

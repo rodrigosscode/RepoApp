@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface RepoService : RepoRemoteDataSource {
 
     @GET("search/repositories")
-    override suspend fun fetchRepoList(
+    override suspend fun fetchRepos(
         @Query("q") language: String,
         @Query("sort") sort: String,
         @Query("page") page: Int,

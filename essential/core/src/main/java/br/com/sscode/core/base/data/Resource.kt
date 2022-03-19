@@ -6,8 +6,8 @@ sealed class Resource<T> {
     data class Loading<T>(val isLoading: Boolean) : Resource<T>()
 
     companion object {
-        fun <T> success(data: T): Resource.Success<T> = Resource.Success(data)
-        fun <T> error(throwable: Throwable): Resource.Error<T> = Resource.Error(throwable)
-        fun <T> loading(isLoading: Boolean): Resource.Loading<T> = Resource.Loading(isLoading)
+        fun <T> success(data: T): Success<T> = Success(data)
+        fun <T> error(throwable: Throwable): Error<T> = Error(throwable)
+        fun <T> loading(isLoading: Boolean): Loading<T> = Loading(isLoading)
     }
 }

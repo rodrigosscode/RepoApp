@@ -4,5 +4,5 @@ import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
 
 interface GetRepoListPagedUseCase {
 
-    suspend operator fun invoke(language: String, sort: String, page: Int): RepoDomain?
+    suspend operator fun invoke(language: String, sort: String, page: Int): List<RepoDomain.Item>?
 }

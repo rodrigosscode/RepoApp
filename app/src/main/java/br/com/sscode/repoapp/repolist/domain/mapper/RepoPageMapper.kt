@@ -13,7 +13,7 @@ object RepoPageMapper {
         )
     }
 
-    private fun convertItemsResponseToDomain(itemsResponse: List<RepoPageResponse.Item>): List<RepoPageDomain.Item> {
+    fun convertItemsResponseToDomain(itemsResponse: List<RepoPageResponse.Item>): List<RepoPageDomain.Item> {
         return itemsResponse.map {
             RepoPageDomain.Item(
                 forksCount = it.forksCount,
@@ -24,10 +24,19 @@ object RepoPageMapper {
         }
     }
 
-    private fun convertOwnerResponseToDomain(ownerResponse: RepoPageResponse.Item.Owner): RepoPageDomain.Item.Owner {
+    fun convertOwnerResponseToDomain(ownerResponse: RepoPageResponse.Item.Owner): RepoPageDomain.Item.Owner {
         return RepoPageDomain.Item.Owner(
             avatarUrl = ownerResponse.avatarUrl,
             login = ownerResponse.login
+        )
+    }
+
+    fun convertItemResponseToDomain(itemResponse: RepoPageResponse.Item): RepoPageDomain.Item {
+        return RepoPageDomain.Item(
+            itemResponse.forksCount,
+            itemResponse.name,
+            convertOwnerResponseToDomain(itemResponse.owner),
+            itemResponse.stargazersCount
         )
     }
 }

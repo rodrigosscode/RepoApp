@@ -1,13 +1,13 @@
 package br.com.sscode.repoapp.repolist.data.source.remote.api
 
-import br.com.sscode.repoapp.repolist.data.source.remote.service.RepoPageService
+import br.com.sscode.repoapp.repolist.data.source.remote.service.RepoService
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "https://api.github.com/search/"
+const val BASE_URL = "https://api.github.com/"
 
 class RetrofitApi {
 
@@ -36,5 +36,5 @@ class RetrofitApi {
             .build()
     }
 
-    fun getRepoPageService(): RepoPageService = instance.create(RepoPageService::class.java)
+    fun getRepoPageService(): RepoService = instance.create(RepoService::class.java)
 }

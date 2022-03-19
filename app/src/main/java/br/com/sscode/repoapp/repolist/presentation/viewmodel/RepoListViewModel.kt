@@ -1,23 +1,24 @@
 package br.com.sscode.repoapp.repolist.presentation.viewmodel
 
-import androidx.lifecycle.*
-import br.com.sscode.repoapp.repolist.data.repository.RepoPageRepositoryImpl
-import br.com.sscode.repoapp.repolist.domain.entity.RepoPageDomain
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCase
-import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCaseImpl
 import kotlinx.coroutines.launch
 
 class RepoListViewModel(
     private val getRepoListPagedUseCase: GetRepoListPagedUseCase
-) : ViewModel(), GetRepoListPagedUseCase.UI {
+) : ViewModel() {
 
-    private val _repos: MutableLiveData<RepoPageDomain> = MutableLiveData()
-    val repos: LiveData<RepoPageDomain> get() = _repos
+    private val _repos: MutableLiveData<RepoDomain> = MutableLiveData()
+    val repos: LiveData<RepoDomain> get() = _repos
 
-    override fun fetchRepoListPaged()  {
+    fun fetchRepoListPaged() {
         viewModelScope.launch {
             with(_repos) {
-                val repos: RepoPageDomain? = getRepoListPagedUseCase(
+                val repos: RepoDomain? = getRepoListPagedUseCase(
                     language = "language:kotlin",
                     sort = "stars",
                     page = 1

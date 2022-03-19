@@ -1,15 +1,15 @@
 package br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged
 
-import br.com.sscode.repoapp.repolist.data.repository.RepoPageRepository
-import br.com.sscode.repoapp.repolist.domain.entity.RepoPageDomain
-import br.com.sscode.repoapp.repolist.domain.mapper.RepoPageMapper
+import br.com.sscode.repoapp.repolist.data.repository.RepoRepository
+import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
+import br.com.sscode.repoapp.repolist.domain.mapper.RepoMapper
 
-class GetRepoListPagedUseCaseImpl(private val repository: RepoPageRepository): GetRepoListPagedUseCase {
+class GetRepoListPagedUseCaseImpl(private val repository: RepoRepository): GetRepoListPagedUseCase {
 
-    override suspend fun invoke(language: String, sort: String, page: Int): RepoPageDomain? {
+    override suspend fun invoke(language: String, sort: String, page: Int): RepoDomain? {
         return try {
             val response = repository.fetchRepoList(language, sort, page)
-            RepoPageMapper.convertRepoPageResponseToDomain(response)
+            RepoMapper.convertResponseToDomain(response)
         } catch (ex: Exception) {
             null
         }

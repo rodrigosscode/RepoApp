@@ -2,7 +2,7 @@ package br.com.sscode.repoapp.repolist.data.entity
 
 import com.google.gson.annotations.SerializedName
 
-data class RepoPageResponse(
+data class RepoResponse(
     @SerializedName("incomplete_results")
     val incompleteResults: Boolean,
     @SerializedName("items")

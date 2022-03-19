@@ -1,6 +1,6 @@
 package br.com.sscode.repoapp.repolist.domain.entity
 
-data class RepoPageDomain(
+data class RepoDomain(
     val incompleteResults: Boolean,
     val items: List<Item>,
     val totalCount: Int

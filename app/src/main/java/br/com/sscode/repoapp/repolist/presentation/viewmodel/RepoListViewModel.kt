@@ -9,9 +9,12 @@ import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.err
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
 import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RepoListViewModel(
+@HiltViewModel
+class RepoListViewModel @Inject constructor(
     private val getRepoListPagedUseCase: GetRepoListPagedUseCase
 ) : BaseViewModel() {
 

@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.com.sscode.repoapp.databinding.ItemRepoListBinding
 import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
+import com.bumptech.glide.Glide
 
 class RepoListAdapter(
-    private val context: Context
+    private val context: Context,
+    private val onItemClick: (RepoDomain.Item) -> Unit
 ) : RecyclerView.Adapter<RepoListAdapter.Holder>() {
 
-    private val items: List<RepoDomain.Item> = arrayListOf()
+    private val items: MutableList<RepoDomain.Item> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(
@@ -24,14 +26,34 @@ class RepoListAdapter(
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind()
+        val item = items[position]
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int = items.size
 
-    inner class Holder(itemView: ItemRepoListBinding) : RecyclerView.ViewHolder(itemView.root) {
-        fun bind() {
-            //TODO not implemented yet
+    fun submitData(newItems: List<RepoDomain.Item>) {
+        var position = -1
+        for (item in newItems) {
+            items.add(item)
+            position = items.size - 1
+            notifyItemInserted(position)
+        }
+    }
+
+    inner class Holder(private val binding: ItemRepoListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: RepoDomain.Item) = with(binding) {
+            Glide.with(context).load(item.owner.avatarUrl).into(itemAuthorPhoto)
+            itemRepoName.text = item.name
+            itemAuthorName.text = item.owner.login
+            itemCountRating.text = item.stargazersCount.toString()
+            itemCountForks.text = item.forksCount.toString()
+
+            root.setOnClickListener {
+                onItemClick.invoke(item)
+            }
         }
     }
 }

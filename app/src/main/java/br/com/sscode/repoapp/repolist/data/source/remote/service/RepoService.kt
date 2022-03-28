@@ -13,4 +13,8 @@ interface RepoService : RepoRemoteDataSource {
         @Query("sort") sort: String,
         @Query("page") page: Int,
     ): RepoResponse
+
+    companion object {
+        const val BASE_URL = "https://api.github.com/"
+    }
 }

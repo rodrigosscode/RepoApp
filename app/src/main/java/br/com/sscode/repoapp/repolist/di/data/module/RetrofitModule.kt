@@ -1,7 +1,5 @@
 package br.com.sscode.repoapp.repolist.di.data.module
 
-import br.com.sscode.repoapp.repolist.data.repository.RepoRepository
-import br.com.sscode.repoapp.repolist.data.repository.RepoRepositoryImpl
 import br.com.sscode.repoapp.repolist.data.source.remote.RepoRemoteDataSource
 import br.com.sscode.repoapp.repolist.data.source.remote.service.RepoService
 import com.google.gson.Gson
@@ -27,11 +25,6 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideRepository(remoteDataSource: RepoRemoteDataSource): RepoRepository =
-        RepoRepositoryImpl(remoteDataSource)
-
-    @Singleton
-    @Provides
     fun provideRetrofit(
         baseUrl: String,
         converterFactory: GsonConverterFactory,
@@ -44,7 +37,7 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideBaseUrl(): String = "https://api.github.com/"
+    fun provideBaseUrl(): String = RepoService.BASE_URL
 
     @Singleton
     @Provides

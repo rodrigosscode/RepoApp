@@ -8,5 +8,6 @@ fun <T> MutableLiveData<Resource<T>>.success(data: T) = postValue(Resource.succe
 fun <T> MutableLiveData<Resource<T>>.error(throwable: Throwable) =
     postValue(Resource.error(throwable))
 
-fun <T> MutableLiveData<Resource<T>>.loading(isLoading: Boolean) =
-    postValue(Resource.loading(isLoading))
+fun <T> MutableLiveData<Resource<T>>.loading(isLoading: Boolean) {
+    value = Resource.loading(isLoading)
+}

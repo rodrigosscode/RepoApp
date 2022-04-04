@@ -41,10 +41,10 @@ class RepoListFragment : BaseFragment() {
     }
 
     override fun initViews() {
-        setupListRepo()
+        setupListRepoWithAdapter()
     }
 
-    private fun setupListRepo() {
+    private fun setupListRepoWithAdapter() {
         binding.repos.apply {
             adapter = repoAdapter
         }

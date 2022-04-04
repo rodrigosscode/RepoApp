@@ -9,3 +9,5 @@ dependencyResolutionManagement {
 rootProject.name = "RepoApp"
 include ':app'
 include ':essential:core'
+include ':essential:ui'
+include ':essential:cache'

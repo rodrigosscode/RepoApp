@@ -28,4 +28,5 @@ ext {
     retrofitVersion = "2.9.0"
     dataStoreVersion = "1.0.0"
     androidTestCoreVersion = "1.4.0"
+    gsonVersion = "2.9.0"
 }

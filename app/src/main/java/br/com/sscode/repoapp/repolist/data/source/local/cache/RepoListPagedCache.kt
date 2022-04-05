@@ -20,6 +20,10 @@ class RepoListPagedCache(
 ), RepoLocalDataSource {
 
     override suspend fun saveRepo(repoDomain: RepoDomain) {
-        super.save(repoDomain)
+        save(repoDomain)
+    }
+
+    override suspend fun getRepo(): RepoDomain? {
+        return get(RepoDomain::class.java)
     }
 }

@@ -17,21 +17,23 @@ abstract class PocketBall<T>(private val preferencesDataStore: DataStore<Prefere
 
     override suspend fun save(data: T) {
         val cryptData = pocketCore.crypt(data)
+
         preferencesDataStore.edit { preferences ->
             val key = stringPreferencesKey(preferencesKey)
             preferences[key] = cryptData
         }
     }
 
-    override suspend fun get(to: Class<T>): T? {
+    override suspend fun get(): T? {
         var data: String? = null
+        val type = object : TypeToken<T>(){}.type
 
         preferencesDataStore.data.collectLatest { preferences ->
             val key = stringPreferencesKey(preferencesKey)
             data = preferences[key]
         }
 
-        return pocketCore.decrypt(data, to)
+        return pocketCore.decrypt(data, type)
     }
 
     override suspend fun contains(): Boolean {

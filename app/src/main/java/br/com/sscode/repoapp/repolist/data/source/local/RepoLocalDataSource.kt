@@ -1,9 +1,8 @@
 package br.com.sscode.repoapp.repolist.data.source.local
 
-import br.com.sscode.core.feature.paging.PagingData
-import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
+import br.com.sscode.repoapp.repolist.data.entity.RepoResponse
 
 interface RepoLocalDataSource {
-    suspend fun savePage(repoPage: PagingData<RepoDomain>)
-    suspend fun getPage(): PagingData<RepoDomain>?
+    suspend fun putPage(pageNumber: Int, repoPage: RepoResponse)
+    suspend fun getPage(pageNumber: Int): RepoResponse?
 }

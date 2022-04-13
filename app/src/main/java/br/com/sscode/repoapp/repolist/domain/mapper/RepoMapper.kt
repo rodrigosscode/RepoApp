@@ -13,15 +13,15 @@ object RepoMapper {
         )
     }
 
-    private fun convertItemsResponseToDomain(itemsResponse: List<RepoResponse.Item>): List<RepoDomain.Item> {
-        return itemsResponse.map {
+    private fun convertItemsResponseToDomain(itemsResponse: List<RepoResponse.Item>?): List<RepoDomain.Item> {
+        return itemsResponse?.map {
             RepoDomain.Item(
                 forksCount = it.forksCount,
                 name = it.name,
                 owner = convertOwnerResponseToDomain(it.owner),
                 stargazersCount = it.stargazersCount
             )
-        }
+        } ?: emptyList()
     }
 
     private fun convertOwnerResponseToDomain(ownerResponse: RepoResponse.Item.Owner): RepoDomain.Item.Owner {

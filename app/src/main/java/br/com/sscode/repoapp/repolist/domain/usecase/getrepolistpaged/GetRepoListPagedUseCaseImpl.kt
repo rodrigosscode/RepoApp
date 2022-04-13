@@ -16,10 +16,12 @@ class GetRepoListPagedUseCaseImpl @Inject constructor(private val repository: Re
         page: Int
     ): PagingData<RepoDomain.Item>? {
         val response = repository.fetchRepos(language, sort, page)
-        val domain = RepoMapper.convertResponseToDomain(response)
-        return PagingData(
+        return response?.let {
+            val domain = RepoMapper.convertResponseToDomain(it)
+            PagingData(
                 domain.items,
                 PagerManager.build(page)
             )
+        } ?: return null
     }
 }

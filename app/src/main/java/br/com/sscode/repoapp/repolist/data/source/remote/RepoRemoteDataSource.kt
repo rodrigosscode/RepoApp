@@ -7,5 +7,5 @@ interface RepoRemoteDataSource {
         language: String,
         sort: String,
         page: Int,
-    ): RepoResponse
+    ): RepoResponse?
 }

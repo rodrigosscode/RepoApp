@@ -8,7 +8,6 @@ import br.com.sscode.cache.base.exception.*
 import br.com.sscode.cache.feature.LocalCacheDataSource
 import br.com.sscode.cache.feature.LocalCacheFeatureCore
 import br.com.sscode.cache.feature.pocketball.core.PocketBallCore
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -39,7 +38,7 @@ abstract class PocketBall<T>(
         return try {
             flow {
                 if (contains()) {
-                    val data = getData().first()
+                    val data = getData()
                     data?.let {
                         emit(
                             pocketCore.decrypt(it, type)
@@ -70,15 +69,7 @@ abstract class PocketBall<T>(
 
     @Throws(CacheException::class)
     override suspend fun contains(): Boolean {
-        return flow {
-            preferencesDataStore.data.collect { preferences ->
-                val key = stringPreferencesKey(getDataKey())
-                val data = preferences[key]
-                emit(
-                    data.isNullOrBlank().not()
-                )
-            }
-        }.first()
+        return getData().isNullOrEmpty().not()
     }
 
     @Throws(CacheException::class)
@@ -93,14 +84,14 @@ abstract class PocketBall<T>(
         }
     }
 
-    override fun getData(): Flow<String?> {
+    override suspend fun getData(): String? {
         return flow {
             preferencesDataStore.data.collect { preferences ->
                 val key = stringPreferencesKey(getDataKey())
                 val data = preferences[key]
                 emit(data)
             }
-        }
+        }.first()
     }
 
     override fun fromSpecificDataKey(key: String) {

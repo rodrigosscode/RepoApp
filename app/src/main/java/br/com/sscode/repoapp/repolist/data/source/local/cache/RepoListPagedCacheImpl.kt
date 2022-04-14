@@ -6,8 +6,6 @@ import br.com.sscode.cache.base.data.CacheDataKeys
 import br.com.sscode.cache.feature.pocketball.PocketBall
 import br.com.sscode.repoapp.repolist.data.entity.RepoResponse
 import br.com.sscode.repoapp.repolist.data.source.local.RepoLocalDataSource
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class RepoListPagedCacheImpl @Inject constructor(
@@ -24,6 +22,6 @@ class RepoListPagedCacheImpl @Inject constructor(
 
     override suspend fun getPage(pageNumber: Int): RepoResponse? {
         fromSpecificDataKey(pageNumber.toString())
-        return get(RepoResponse::class.java).first()
+        return get(RepoResponse::class.java)
     }
 }

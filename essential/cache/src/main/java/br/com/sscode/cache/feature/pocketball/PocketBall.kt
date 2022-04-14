@@ -35,12 +35,10 @@ abstract class PocketBall<T>(
     }
 
     @Throws(CacheException::class)
-    override suspend fun get(type: Class<T>): Flow<T?> {
+    override suspend fun get(type: Class<T>): T? {
         return try {
-            val contains = contains().first()
-
             flow {
-                if (contains) {
+                if (contains()) {
                     val data = getData().first()
                     data?.let {
                         emit(
@@ -50,7 +48,7 @@ abstract class PocketBall<T>(
                 } else {
                     emit(null)
                 }
-            }
+            }.first()
         } catch (exception: Exception) {
             throw GetCacheException(exception.message)
         }
@@ -60,9 +58,7 @@ abstract class PocketBall<T>(
     @Throws(CacheException::class)
     override suspend fun put(data: T) {
         try {
-            val contains = contains().first()
-
-            if (contains) {
+            if (contains()) {
                 delete()
             }
 
@@ -73,7 +69,7 @@ abstract class PocketBall<T>(
     }
 
     @Throws(CacheException::class)
-    override suspend fun contains(): Flow<Boolean> {
+    override suspend fun contains(): Boolean {
         return flow {
             preferencesDataStore.data.collect { preferences ->
                 val key = stringPreferencesKey(getDataKey())
@@ -82,7 +78,7 @@ abstract class PocketBall<T>(
                     data.isNullOrBlank().not()
                 )
             }
-        }
+        }.first()
     }
 
     @Throws(CacheException::class)

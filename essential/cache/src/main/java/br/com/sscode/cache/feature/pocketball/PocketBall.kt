@@ -8,9 +8,10 @@ import br.com.sscode.cache.base.exception.*
 import br.com.sscode.cache.feature.LocalCacheDataSource
 import br.com.sscode.cache.feature.LocalCacheFeatureCore
 import br.com.sscode.cache.feature.pocketball.core.PocketBallCore
-import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 
 abstract class PocketBall<T>(
     private val preferencesDataStore: DataStore<Preferences>,
@@ -34,31 +35,34 @@ abstract class PocketBall<T>(
     }
 
     @Throws(CacheException::class)
-    override suspend fun get(): T? {
-        var data: String? = null
-        val type = object : TypeToken<T>() {}.type
-
+    override suspend fun get(type: Class<T>): Flow<T?> {
         return try {
-            if (contains()) {
-                preferencesDataStore.data.collectLatest { preferences ->
-                    val key = stringPreferencesKey(getDataKey())
-                    data = preferences[key]
+            val contains = contains().first()
+
+            flow {
+                if (contains) {
+                    val data = getData().first()
+                    data?.let {
+                        emit(
+                            pocketCore.decrypt(it, type)
+                        )
+                    } ?: emit(null)
+                } else {
+                    emit(null)
                 }
-
-                data?.let {
-                    pocketCore.decrypt(it, type)
-                } ?: return null
-
-            } else null
+            }
         } catch (exception: Exception) {
             throw GetCacheException(exception.message)
         }
     }
 
+
     @Throws(CacheException::class)
     override suspend fun put(data: T) {
         try {
-            if (contains()) {
+            val contains = contains().first()
+
+            if (contains) {
                 delete()
             }
 
@@ -69,15 +73,16 @@ abstract class PocketBall<T>(
     }
 
     @Throws(CacheException::class)
-    override suspend fun contains(): Boolean {
-        var data: String? = null
-
-        preferencesDataStore.data.collectLatest { preferences ->
-            val key = stringPreferencesKey(getDataKey())
-            data = preferences[key]
+    override suspend fun contains(): Flow<Boolean> {
+        return flow {
+            preferencesDataStore.data.collect { preferences ->
+                val key = stringPreferencesKey(getDataKey())
+                val data = preferences[key]
+                emit(
+                    data.isNullOrBlank().not()
+                )
+            }
         }
-
-        return data.isNullOrBlank().not()
     }
 
     @Throws(CacheException::class)
@@ -89,6 +94,16 @@ abstract class PocketBall<T>(
             }
         } catch (exception: Exception) {
             throw DeleteCacheException(exception.message)
+        }
+    }
+
+    override fun getData(): Flow<String?> {
+        return flow {
+            preferencesDataStore.data.collect { preferences ->
+                val key = stringPreferencesKey(getDataKey())
+                val data = preferences[key]
+                emit(data)
+            }
         }
     }
 

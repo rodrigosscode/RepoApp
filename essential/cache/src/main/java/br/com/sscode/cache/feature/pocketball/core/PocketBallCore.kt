@@ -9,5 +9,5 @@ internal class PocketBallCore<T> {
 
     fun crypt(data: T): String = gson.toJson(data)
 
-    fun decrypt(data: String, type: Type): T? = gson.fromJson(data, type)
+    fun decrypt(data: String, type: Class<T>): T? = gson.fromJson(data, type)
 }

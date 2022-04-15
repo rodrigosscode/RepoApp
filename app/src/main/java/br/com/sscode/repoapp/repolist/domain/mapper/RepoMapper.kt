@@ -1,33 +1,37 @@
 package br.com.sscode.repoapp.repolist.domain.mapper
 
+import br.com.sscode.repoapp.repolist.data.entity.ItemResponse
+import br.com.sscode.repoapp.repolist.data.entity.OwnerResponse
 import br.com.sscode.repoapp.repolist.data.entity.RepoResponse
+import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
+import br.com.sscode.repoapp.repolist.domain.entity.OwnerDomain
 import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
 
 object RepoMapper {
 
     fun convertResponseToDomain(repoResponse: RepoResponse): RepoDomain {
         return RepoDomain(
-            incompleteResults = repoResponse.incompleteResults,
+            incompleteResults = repoResponse.incompleteResults ?: false,
             items = convertItemsResponseToDomain(repoResponse.items),
-            totalCount = repoResponse.totalCount
+            totalCount = repoResponse.totalCount ?: -1
         )
     }
 
-    private fun convertItemsResponseToDomain(itemsResponse: List<RepoResponse.Item>?): List<RepoDomain.Item> {
+    private fun convertItemsResponseToDomain(itemsResponse: List<ItemResponse>?): List<ItemDomain> {
         return itemsResponse?.map {
-            RepoDomain.Item(
-                forksCount = it.forksCount,
-                name = it.name,
+            ItemDomain(
+                forksCount = it.forksCount ?: -1,
+                name = it.name ?: "",
                 owner = convertOwnerResponseToDomain(it.owner),
-                stargazersCount = it.stargazersCount
+                stargazersCount = it.stargazersCount ?: -1
             )
         } ?: emptyList()
     }
 
-    private fun convertOwnerResponseToDomain(ownerResponse: RepoResponse.Item.Owner): RepoDomain.Item.Owner {
-        return RepoDomain.Item.Owner(
-            avatarUrl = ownerResponse.avatarUrl,
-            login = ownerResponse.login
+    private fun convertOwnerResponseToDomain(ownerResponse: OwnerResponse?): OwnerDomain {
+        return OwnerDomain(
+            avatarUrl = ownerResponse?.avatarUrl ?: "",
+            login = ownerResponse?.login ?: ""
         )
     }
 }

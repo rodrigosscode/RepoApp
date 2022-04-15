@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class RepoListFragment : BaseFragment() {
 
     private lateinit var binding: FragmentRepoListBinding
+    private lateinit var currentPage: PagingData<RepoDomain.Item>
     private val viewModel: RepoListViewModel by viewModels()
     private val repoAdapter: RepoListAdapter by lazy {
         RepoListAdapter(requireContext()) {
@@ -30,7 +31,6 @@ class RepoListFragment : BaseFragment() {
             ).show()
         }
     }
-    private lateinit var currentPage: PagingData<RepoDomain.Item>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +40,7 @@ class RepoListFragment : BaseFragment() {
         return binding.root
     }
 
-    override fun initViews() {
+    override fun setupViews() {
         setupListRepoWithAdapter()
     }
 
@@ -50,17 +50,17 @@ class RepoListFragment : BaseFragment() {
         }
     }
 
-    override fun initObservers() {
+    override fun setupObservers() {
         viewModel.repos.observeResource(
             this,
-            onSuccess = {
-                currentPage = it
+            onSuccess = { page ->
+                currentPage = page
                 repoAdapter.submitData(currentPage.items)
             },
-            onError = {
-
+            onError = { error ->
+                error.printStackTrace()
             },
-            onLoading = this::setupLoading
+            onLoading = ::setupLoading
         )
     }
 

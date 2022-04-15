@@ -16,7 +16,7 @@ const val PREFERENCES_CACHE = "PREFERENCES_CACHE"
 
 @Module
 @InstallIn(SingletonComponent::class)
-class DataStoreModule {
+object DataStoreModule {
 
     private val Context.cache by preferencesDataStore(
         PREFERENCES_CACHE

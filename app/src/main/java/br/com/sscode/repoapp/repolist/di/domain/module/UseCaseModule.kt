@@ -9,7 +9,7 @@ import dagger.hilt.android.components.ViewModelComponent
 
 @Module
 @InstallIn(ViewModelComponent::class)
-interface DomainModule {
+interface UseCaseModule {
 
     @Binds
     fun bindGetRepoListPagedUseCase(

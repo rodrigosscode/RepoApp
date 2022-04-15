@@ -10,17 +10,19 @@ import javax.inject.Inject
 class RepoRepositoryImpl @Inject constructor(
     private val context: Context,
     private val remote: RepoRemoteDataSource,
-    private val local: RepoLocalDataSource
+    private val localCache: RepoLocalDataSource
 ) : RepoRepository {
 
-    override suspend fun fetchRepos(language: String, sort: String, page: Int): RepoResponse? =
-        with(context) {
-            return if (isNetworkConnected()) {
-                val repoResponse = remote.fetchRepos(language, sort, page)
-                repoResponse?.let { local.putPage(page, it) }
-                repoResponse
+    override suspend fun fetchRepos(language: String, sort: String, page: Int): RepoResponse? {
+        return with(context) {
+            if (isNetworkConnected()) {
+                remote.fetchRepos(language, sort, page)?.let { response ->
+                    localCache.putPage(page, response)
+                    return response
+                }
             } else {
-                local.getPage(page)
+                return localCache.getPage(page)
             }
         }
+    }
 }

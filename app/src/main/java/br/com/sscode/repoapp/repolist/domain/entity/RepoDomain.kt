@@ -2,19 +2,19 @@ package br.com.sscode.repoapp.repolist.domain.entity
 
 data class RepoDomain(
     val incompleteResults: Boolean,
-    val items: List<Item>,
+    val items: List<ItemDomain>,
     val totalCount: Int
-) {
-    data class Item(
-        val forksCount: Int,
-        val name: String,
-        val owner: Owner,
-        val stargazersCount: Int
-    ) {
-        data class Owner(
-            val avatarUrl: String,
-            val login: String
-        )
-    }
-}
+)
+
+data class ItemDomain(
+    val forksCount: Int,
+    val name: String,
+    val owner: OwnerDomain,
+    val stargazersCount: Int
+)
+
+data class OwnerDomain(
+    val avatarUrl: String,
+    val login: String
+)
 

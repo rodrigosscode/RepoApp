@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 
-abstract class PocketBall<T>(
+abstract class PocketBallCache<T : Any>(
     private val preferencesDataStore: DataStore<Preferences>,
     private val preferencesBaseDataKey: String,
 ) : LocalCacheDataSource<T>, LocalCacheFeatureCore() {
@@ -22,11 +22,11 @@ abstract class PocketBall<T>(
     @Throws(CacheException::class)
     override suspend fun save(data: T) {
         try {
-            val cryptData = pocketCore.crypt(data)
+            val cryptedData = pocketCore.crypt(data)
 
             preferencesDataStore.edit { preferences ->
                 val key = stringPreferencesKey(getDataKey())
-                preferences[key] = cryptData
+                preferences[key] = cryptedData
             }
         } catch (exception: Exception) {
             throw SaveCacheException(exception.message)
@@ -35,24 +35,22 @@ abstract class PocketBall<T>(
 
     @Throws(CacheException::class)
     override suspend fun get(type: Class<T>): T? {
+        var valueReturned: T? = null
         return try {
             flow {
                 if (contains()) {
-                    val data = getData()
-                    data?.let {
-                        emit(
-                            pocketCore.decrypt(it, type)
-                        )
-                    } ?: emit(null)
-                } else {
-                    emit(null)
+                    val cryptedData = getData()
+                    cryptedData?.let {
+                        valueReturned = pocketCore.decrypt(it, type)
+                    }
                 }
+
+                emit(valueReturned)
             }.first()
         } catch (exception: Exception) {
             throw GetCacheException(exception.message)
         }
     }
-
 
     @Throws(CacheException::class)
     override suspend fun put(data: T) {

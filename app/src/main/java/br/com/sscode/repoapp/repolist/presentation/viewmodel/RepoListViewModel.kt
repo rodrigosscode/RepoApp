@@ -1,6 +1,5 @@
 package br.com.sscode.repoapp.repolist.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,11 +9,10 @@ import br.com.sscode.core.feature.paging.PagingData
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.error
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.loading
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
-import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
+import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,8 +20,8 @@ class RepoListViewModel @Inject constructor(
     private val getRepoListPagedUseCase: GetRepoListPagedUseCase
 ) : BaseViewModel() {
 
-    private val _repos: MutableLiveData<Resource<PagingData<RepoDomain.Item>>> = MutableLiveData()
-    val repos: LiveData<Resource<PagingData<RepoDomain.Item>>> get() = _repos
+    private val _repos: MutableLiveData<Resource<PagingData<ItemDomain>>> = MutableLiveData()
+    val repos: LiveData<Resource<PagingData<ItemDomain>>> get() = _repos
 
     fun fetchRepoListPaged(
         language: String = "language:kotlin",

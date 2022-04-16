@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.com.sscode.repoapp.databinding.ItemRepoListBinding
-import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
+import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import com.bumptech.glide.Glide
 
 class RepoListAdapter(
     private val context: Context,
-    private val onItemClick: (RepoDomain.Item) -> Unit
+    private val onItemClick: (ItemDomain) -> Unit
 ) : RecyclerView.Adapter<RepoListAdapter.Holder>() {
 
-    private val items: MutableList<RepoDomain.Item> = arrayListOf()
+    private val items: MutableList<ItemDomain> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(
@@ -32,7 +32,7 @@ class RepoListAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun submitData(newItems: List<RepoDomain.Item>) {
+    fun submitData(newItems: List<ItemDomain>) {
         var position = -1
         for (item in newItems) {
             items.add(item)
@@ -44,7 +44,7 @@ class RepoListAdapter(
     inner class Holder(private val binding: ItemRepoListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: RepoDomain.Item) = with(binding) {
+        fun bind(item: ItemDomain) = with(binding) {
             Glide.with(context).load(item.owner.avatarUrl).into(itemAuthorPhoto)
             itemRepoName.text = item.name
             itemAuthorName.text = item.owner.login

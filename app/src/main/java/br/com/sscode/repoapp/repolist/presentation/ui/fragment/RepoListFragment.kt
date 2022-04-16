@@ -11,7 +11,7 @@ import br.com.sscode.core.feature.paging.PagerManager
 import br.com.sscode.core.feature.paging.PagingData
 import br.com.sscode.core.feature.viewmodel.resourceobserver.livedata.observeResource
 import br.com.sscode.repoapp.databinding.FragmentRepoListBinding
-import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
+import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.presentation.ui.adapter.recyclerview.RepoListAdapter
 import br.com.sscode.repoapp.repolist.presentation.viewmodel.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class RepoListFragment : BaseFragment() {
 
     private lateinit var binding: FragmentRepoListBinding
-    private lateinit var currentPage: PagingData<RepoDomain.Item>
+    private lateinit var currentPage: PagingData<ItemDomain>
     private val viewModel: RepoListViewModel by viewModels()
     private val repoAdapter: RepoListAdapter by lazy {
         RepoListAdapter(requireContext()) {

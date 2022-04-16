@@ -17,7 +17,6 @@ abstract class PocketBallCache<T : Any>(
     private val preferencesBaseDataKey: String,
 ) : LocalCacheDataSource<T>, LocalCacheFeatureCore() {
 
-//    @Inject lateinit var pocketCore: PocketBallCore<T>
     private val pocketCore by lazy { PocketBallCore<T>() }
 
     @Throws(CacheException::class)

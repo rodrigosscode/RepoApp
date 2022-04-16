@@ -33,9 +33,9 @@
         <View
             android:id="@+id/item_repo_name"
             android:layout_width="0dp"
-            android:layout_height="20dp"
+            android:layout_height="16dp"
             android:layout_marginStart="20dp"
-            android:background="@color/light"
+            android:background="@drawable/item_repo_list_rounded_placeholder_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/item_author_photo"
             app:layout_constraintTop_toTopOf="parent" />
@@ -43,29 +43,27 @@
         <View
             android:id="@+id/item_author_name"
             android:layout_width="160dp"
-            android:layout_height="15dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/light"
+            android:layout_height="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/item_repo_list_rounded_placeholder_background"
             app:layout_constraintStart_toStartOf="@id/item_repo_name"
             app:layout_constraintTop_toBottomOf="@id/item_repo_name" />
 
         <View
             android:id="@+id/item_count_rating"
             android:layout_width="60dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="5dp"
-            android:background="@color/light"
-            app:layout_constraintBottom_toBottomOf="@id/item_author_photo"
+            android:layout_height="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/item_repo_list_rounded_placeholder_background"
             app:layout_constraintStart_toStartOf="@id/item_author_name"
             app:layout_constraintTop_toBottomOf="@id/item_author_name" />
 
         <View
             android:id="@+id/item_count_forks"
             android:layout_width="60dp"
-            android:layout_height="0dp"
+            android:layout_height="12dp"
             android:layout_marginStart="5dp"
-            android:background="@color/light"
-            app:layout_constraintBottom_toBottomOf="@id/item_author_photo"
+            android:background="@drawable/item_repo_list_rounded_placeholder_background"
             app:layout_constraintStart_toEndOf="@id/item_count_rating"
             app:layout_constraintTop_toTopOf="@id/item_count_rating" />
 

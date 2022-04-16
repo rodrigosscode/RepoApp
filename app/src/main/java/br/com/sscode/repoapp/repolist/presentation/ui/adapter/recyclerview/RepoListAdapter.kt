@@ -33,12 +33,9 @@ class RepoListAdapter(
     override fun getItemCount(): Int = items.size
 
     fun submitData(newItems: List<ItemDomain>) {
-        var position = -1
-        for (item in newItems) {
-            items.add(item)
-            position = items.size - 1
-            notifyItemInserted(position)
-        }
+        val positionStart = itemCount-1
+        items.addAll(newItems)
+        notifyItemRangeInserted(positionStart, newItems.size)
     }
 
     inner class Holder(private val binding: ItemRepoListBinding) :

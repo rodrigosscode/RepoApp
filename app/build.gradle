@@ -23,6 +23,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -61,9 +65,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
 
-    //PAGINATION
-    implementation "androidx.paging:paging-runtime-ktx:$pagingVersion"
-
     //RETROFIT - HTTP
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
@@ -94,7 +95,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     androidTestImplementation "androidx.navigation:navigation-testing:$navigationVersion"
-    testImplementation "androidx.paging:paging-common-ktx:$pagingVersion"
     androidTestImplementation  "com.google.dagger:hilt-android-testing:$hiltVersion"
     kaptAndroidTest "com.google.dagger:hilt-compiler:$hiltVersion"
     kaptTest "com.google.dagger:hilt-compiler:$hiltVersion"

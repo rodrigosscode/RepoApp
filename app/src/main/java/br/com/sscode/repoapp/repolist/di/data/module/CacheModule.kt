@@ -2,10 +2,12 @@ package br.com.sscode.repoapp.repolist.di.data.module
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import br.com.sscode.repoapp.RepoServiceLocator
+import br.com.sscode.repoapp.RepoServiceLocator.cache
 import br.com.sscode.repoapp.repolist.data.source.local.RepoLocalDataSource
 import br.com.sscode.repoapp.repolist.data.source.local.cache.RepoListPagedCacheImpl
 import br.com.sscode.repoapp.repolist.di.data.qualifier.Cache
-import br.com.sscode.repoapp.repolist.di.global.qualifier.RepoPagedStore
+import br.com.sscode.repoapp.repolist.di.data.qualifier.RepoPagedStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,4 +24,10 @@ object CacheModule {
     fun provideLocalDataSourceService(
         @RepoPagedStore dataStore: DataStore<Preferences>
     ): RepoLocalDataSource = RepoListPagedCacheImpl(dataStore)
+
+    @Singleton
+    @Provides
+    @RepoPagedStore
+    fun provideDataStoreCacheRepoListPaged(): DataStore<Preferences> =
+        RepoServiceLocator.application.cache
 }

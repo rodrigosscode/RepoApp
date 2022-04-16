@@ -17,13 +17,13 @@ abstract class PocketBallCache<T : Any>(
     private val preferencesBaseDataKey: String,
 ) : LocalCacheDataSource<T>, LocalCacheFeatureCore() {
 
+//    @Inject lateinit var pocketCore: PocketBallCore<T>
     private val pocketCore by lazy { PocketBallCore<T>() }
 
     @Throws(CacheException::class)
     override suspend fun save(data: T) {
         try {
             val cryptedData = pocketCore.crypt(data)
-
             preferencesDataStore.edit { preferences ->
                 val key = stringPreferencesKey(getDataKey())
                 preferences[key] = cryptedData
@@ -44,7 +44,6 @@ abstract class PocketBallCache<T : Any>(
                         valueReturned = pocketCore.decrypt(it, type)
                     }
                 }
-
                 emit(valueReturned)
             }.first()
         } catch (exception: Exception) {
@@ -58,7 +57,6 @@ abstract class PocketBallCache<T : Any>(
             if (contains()) {
                 delete()
             }
-
             save(data)
         } catch (exception: Exception) {
             throw PutCacheException(exception.message)

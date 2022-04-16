@@ -4,8 +4,7 @@ import br.com.sscode.core.feature.paging.PagerManager
 import br.com.sscode.core.feature.paging.PagingData
 import br.com.sscode.repoapp.repolist.data.repository.RepoRepository
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
-import br.com.sscode.repoapp.repolist.domain.entity.RepoDomain
-import br.com.sscode.repoapp.repolist.domain.mapper.RepoMapper
+import br.com.sscode.repoapp.repolist.domain.mapper.convertResponseToDomain
 import javax.inject.Inject
 
 class GetRepoListPagedUseCaseImpl @Inject constructor(private val repository: RepoRepository) :
@@ -15,14 +14,12 @@ class GetRepoListPagedUseCaseImpl @Inject constructor(private val repository: Re
         language: String,
         sort: String,
         page: Int
-    ): PagingData<ItemDomain>? {
-        val response = repository.fetchRepos(language, sort, page)
-        return response?.let {
-            val domain = RepoMapper.convertResponseToDomain(it)
+    ): PagingData<ItemDomain> {
+        return repository.fetchRepos(language, sort, page)?.let { response ->
             PagingData(
-                domain.items,
+                convertResponseToDomain(response).items,
                 PagerManager.build(page)
             )
-        } ?: return null
+        } ?: throw IllegalArgumentException("Didn't get a good response")
     }
 }

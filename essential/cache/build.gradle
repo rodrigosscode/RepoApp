@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -39,6 +41,10 @@ dependencies {
     //DATASTORE - CACHE
     implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
     implementation "androidx.datastore:datastore-preferences-core:$dataStoreVersion"
+
+    //DEPENDENCY INJECTION
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
 
     //OTHERS LIBS
     implementation "com.google.code.gson:gson:$gsonVersion"

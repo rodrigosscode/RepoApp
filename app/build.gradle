@@ -52,6 +52,9 @@ dependencies {
     implementation project(":essential:core")
     implementation project(":essential:cache")
 
+    //UI
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
     //COROUTINES - SCOPE MANAGER
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"

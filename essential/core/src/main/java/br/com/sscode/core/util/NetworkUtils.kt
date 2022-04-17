@@ -6,6 +6,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.telecom.ConnectionService
 
+@Suppress("DEPRECATION")
 fun Context.isNetworkConnected(): Boolean = with(
     getSystemService(ConnectionService.CONNECTIVITY_SERVICE) as ConnectivityManager
 ) {

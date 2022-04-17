@@ -12,20 +12,20 @@ fun Context.isNetworkConnected(): Boolean = with(
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         val network = activeNetwork ?: return false
         val capabilities = getNetworkCapabilities(network)
-        capabilities?.let {
-            with(it) {
+        capabilities?.let { capability ->
+            with(capability) {
                 hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                 hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
                 hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
             }
-        } ?: return false
+        } ?: false
     } else {
-        activeNetworkInfo?.let {
-            with(it) {
+        activeNetworkInfo?.let { info ->
+            with(info) {
                 type == ConnectivityManager.TYPE_WIFI ||
                 type == ConnectivityManager.TYPE_ETHERNET ||
                 type == ConnectivityManager.TYPE_MOBILE
             }
-        } ?: return false
+        } ?: false
     }
 }

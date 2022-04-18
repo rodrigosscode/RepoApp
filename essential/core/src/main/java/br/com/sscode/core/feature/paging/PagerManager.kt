@@ -1,9 +1,9 @@
 package br.com.sscode.core.feature.paging
 
 data class PagerManager(
-    val currentPage: Int?,
-    val prevPage: Int?,
-    val nextPage: Int?,
+    val currentPage: Int,
+    val prevPage: Int,
+    val nextPage: Int,
 ) {
     companion object {
         fun build(currentPage: Int): PagerManager = PagerManager(

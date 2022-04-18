@@ -1,4 +1,4 @@
-package br.com.sscode.core.base.ui
+package br.com.sscode.core.base.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 

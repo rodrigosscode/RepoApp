@@ -1,7 +1,7 @@
 package br.com.sscode.repoapp
 
 import android.os.Bundle
-import br.com.sscode.core.base.ui.BaseActivity
+import br.com.sscode.core.base.ui.activity.BaseActivity
 import br.com.sscode.repoapp.databinding.ActivityRepoMainContentBinding
 import dagger.hilt.android.AndroidEntryPoint
 

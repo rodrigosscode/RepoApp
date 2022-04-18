@@ -1,4 +1,4 @@
-package br.com.sscode.core.base.ui
+package br.com.sscode.core.base.ui.fragment
 
 import android.os.Bundle
 import android.view.View

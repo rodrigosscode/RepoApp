@@ -11,7 +11,7 @@
     app:shimmer_direction="top_to_bottom"
     app:shimmer_shape="linear"
     app:shimmer_intensity="0.3"
-    app:layout_constraintTop_toBottomOf="@id/repos"
+    app:layout_constraintTop_toBottomOf="@id/rv_repos"
     app:shimmer_auto_start="false"
     app:shimmer_duration="3000">
 

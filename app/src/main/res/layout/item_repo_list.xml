@@ -22,7 +22,7 @@
         android:paddingBottom="10dp">
 
         <ImageView
-            android:id="@+id/item_author_photo"
+            android:id="@+id/iv_item_author_photo"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:background="@color/light"
@@ -33,7 +33,7 @@
             app:layout_constraintVertical_bias="0.3" />
 
         <TextView
-            android:id="@+id/item_repo_name"
+            android:id="@+id/tv_item_repo_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -41,12 +41,12 @@
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/item_author_photo"
+            app:layout_constraintStart_toEndOf="@id/iv_item_author_photo"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Nome do repositório" />
 
         <TextView
-            android:id="@+id/item_author_name"
+            android:id="@+id/tv_item_author_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
@@ -54,12 +54,12 @@
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/item_repo_name"
-            app:layout_constraintTop_toBottomOf="@id/item_repo_name"
+            app:layout_constraintStart_toStartOf="@id/tv_item_repo_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_item_repo_name"
             tools:text="Autor" />
 
         <TextView
-            android:id="@+id/item_count_rating"
+            android:id="@+id/tv_item_count_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -67,24 +67,24 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             app:drawableStartCompat="@drawable/ic_star"
-            app:layout_constraintStart_toStartOf="@id/item_author_name"
-            app:layout_constraintTop_toBottomOf="@id/item_author_name"
+            app:layout_constraintStart_toStartOf="@id/tv_item_author_name"
+            app:layout_constraintTop_toBottomOf="@id/tv_item_author_name"
             tools:text="0" />
 
         <View
-            android:id="@+id/separator"
+            android:id="@+id/v_separator"
             android:layout_width="0.8dp"
             android:layout_height="0dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:background="@color/light"
-            app:layout_constraintBottom_toBottomOf="@id/item_count_rating"
-            app:layout_constraintStart_toEndOf="@id/item_count_rating"
-            app:layout_constraintTop_toTopOf="@id/item_count_rating" />
+            app:layout_constraintBottom_toBottomOf="@id/tv_item_count_rating"
+            app:layout_constraintStart_toEndOf="@id/tv_item_count_rating"
+            app:layout_constraintTop_toTopOf="@id/tv_item_count_rating" />
 
         <TextView
-            android:id="@+id/item_count_forks"
+            android:id="@+id/tv_item_count_forks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -92,8 +92,8 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             app:drawableStartCompat="@drawable/ic_fork"
-            app:layout_constraintStart_toEndOf="@id/separator"
-            app:layout_constraintTop_toTopOf="@id/item_count_rating"
+            app:layout_constraintStart_toEndOf="@id/v_separator"
+            app:layout_constraintTop_toTopOf="@id/tv_item_count_rating"
             tools:text="0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

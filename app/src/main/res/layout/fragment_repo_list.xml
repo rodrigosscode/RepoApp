@@ -14,11 +14,11 @@
         android:paddingBottom="10dp">
 
         <include
-            android:id="@+id/statusbar"
+            android:id="@+id/ic_statusbar"
             layout="@layout/status_bar_content_layout" />
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -28,10 +28,10 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/statusbar" />
+            app:layout_constraintTop_toBottomOf="@id/ic_statusbar" />
 
         <TextView
-            android:id="@+id/subtitle"
+            android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -40,20 +40,20 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/repos"
+            android:id="@+id/rv_repos"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:nestedScrollingEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/subtitle" />
+            app:layout_constraintTop_toBottomOf="@id/tv_subtitle" />
 
         <include
-            android:id="@+id/shimmerLoaderContent"
+            android:id="@+id/shimmer_loader_content"
             layout="@layout/fragment_repo_list_content_placeholder" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

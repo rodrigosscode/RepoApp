@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import br.com.sscode.core.base.data.Resource
 import br.com.sscode.core.base.viewmodel.BaseViewModel
 import br.com.sscode.core.feature.paging.PagerManager
-import br.com.sscode.core.feature.paging.PagingData
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.error
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.loading
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
@@ -15,7 +14,6 @@ import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoLis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,20 +21,24 @@ class RepoListViewModel @Inject constructor(
     private val getRepoListPagedUseCase: GetRepoListPagedUseCase
 ) : BaseViewModel() {
 
-    private val _reposPaged: MutableLiveData<Resource<PagingData<ItemDomain>>> = MutableLiveData()
-    val reposPaged: LiveData<Resource<PagingData<ItemDomain>>> get() = _reposPaged
+    private val _repos: MutableLiveData<Resource<MutableList<ItemDomain>>> = MutableLiveData()
+    val repos: LiveData<Resource<MutableList<ItemDomain>>> get() = _repos
 
-    val existsReposLoaded: Boolean get() = _reposPaged.value != null
+    private val _repoPagesLoaded: MutableLiveData<MutableList<ItemDomain>> =
+        MutableLiveData(mutableListOf())
+
+    private val _existsReposLoaded: MutableLiveData<Boolean> = MutableLiveData(false)
+    val existsReposLoaded: Boolean get() = _existsReposLoaded.value ?: false
 
     private val _nextPage: MutableLiveData<Int> = MutableLiveData()
-    private val nextPage: Int? get() = _nextPage.value
+    private val nextPage: Int get() = _nextPage.value ?: PagerManager.FIRST_PAGE
 
     fun fetchRepoListPaged(
         language: String = "language:kotlin",
         sort: String = "stars",
-        page: Int = nextPage ?: PagerManager.FIRST_PAGE
+        page: Int = nextPage
     ) = viewModelScope.launch {
-        with(_reposPaged) {
+        with(_repos) {
             try {
                 loading(true)
                 val pagedRepos = getRepoListPagedUseCase(
@@ -45,20 +47,17 @@ class RepoListViewModel @Inject constructor(
                     page = page
                 )
                 delay(2000)
-                success(pagedRepos)
+                _nextPage.value = pagedRepos.pageManager.nextPage
+                _existsReposLoaded.value = true
+                _repoPagesLoaded.value?.let { list ->
+                    list.addAll(pagedRepos.items)
+                    success(list)
+                }
             } catch (exception: Exception) {
                 error(exception)
             } finally {
                 loading(false)
             }
         }
-    }
-
-    fun addLoadedPages(newItems: List<ItemDomain>) {
-
-    }
-
-    fun setNextPage(next: Int) {
-        _nextPage.value = next
     }
 }

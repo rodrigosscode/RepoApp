@@ -12,7 +12,6 @@ import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.suc
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,14 +20,12 @@ class RepoListViewModel @Inject constructor(
     private val getRepoListPagedUseCase: GetRepoListPagedUseCase
 ) : BaseViewModel() {
 
-    private val _repos: MutableLiveData<Resource<MutableList<ItemDomain>>> = MutableLiveData()
-    val repos: LiveData<Resource<MutableList<ItemDomain>>> get() = _repos
+    private val _resource: MutableLiveData<Resource<MutableList<ItemDomain>>> = MutableLiveData(
+        Resource.Empty(mutableListOf())
+    )
+    val resource: LiveData<Resource<MutableList<ItemDomain>>> get() = _resource
 
-    private val _repoPagesLoaded: MutableLiveData<MutableList<ItemDomain>> =
-        MutableLiveData(mutableListOf())
-
-    private val _existsReposLoaded: MutableLiveData<Boolean> = MutableLiveData(false)
-    val existsReposLoaded: Boolean get() = _existsReposLoaded.value ?: false
+    val existsReposLoaded: Boolean get() = _resource.value?.data?.isNotEmpty() ?: false
 
     private val _nextPage: MutableLiveData<Int> = MutableLiveData()
     private val nextPage: Int get() = _nextPage.value ?: PagerManager.FIRST_PAGE
@@ -38,23 +35,17 @@ class RepoListViewModel @Inject constructor(
         sort: String = "stars",
         page: Int = nextPage
     ) = viewModelScope.launch {
-        with(_repos) {
+        with(_resource) {
             try {
                 loading(true)
-                val pagedRepos = getRepoListPagedUseCase(
-                    language = language,
-                    sort = sort,
-                    page = page
-                )
-                delay(2000)
-                _nextPage.value = pagedRepos.pageManager.nextPage
-                _existsReposLoaded.value = true
-                _repoPagesLoaded.value?.let { list ->
-                    list.addAll(pagedRepos.items)
-                    success(list)
+                val pagedRepos = getRepoListPagedUseCase(language, sort, page)
+                value?.data?.let { data ->
+                    _nextPage.value = pagedRepos.pageManager.nextPage
+                    data.addAll(pagedRepos.items)
+                    success(data)
                 }
-            } catch (exception: Exception) {
-                error(exception)
+            } catch (ex: Exception) {
+                error(ex)
             } finally {
                 loading(false)
             }

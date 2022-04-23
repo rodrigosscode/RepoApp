@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,13 +24,7 @@ class RepoListFragment : BaseFragment() {
         mutableListOf()
     }
     private val repoAdapter: RepoListAdapter by lazy {
-        RepoListAdapter(requireContext(), repoList) {
-            Toast.makeText(
-                requireContext(),
-                "OPA",
-                Toast.LENGTH_LONG
-            ).show()
-        }
+        RepoListAdapter(requireContext(), repoList) {}
     }
 
     private val viewModel: RepoListViewModel by viewModels()
@@ -80,19 +73,16 @@ class RepoListFragment : BaseFragment() {
     }
 
     override fun setupObservers() = with(viewModel) {
-        repos.observeResource(
-            this@RepoListFragment,
-            onSuccess = { page ->
+        resource.observeResource(viewLifecycleOwner,
+            onSuccess = { items ->
                 repoList.clear()
-                repoList.addAll(page)
+                repoList.addAll(items)
                 repoAdapter.notifyDataSetChanged()
-//                repoAdapter.notifyItemRangeInserted()
-//                repoAdapter.submitData(page)
             },
+            onLoading = ::setupLoading,
             onError = { error ->
                 error.printStackTrace()
-            },
-            onLoading = ::setupLoading
+            }
         )
     }
 

@@ -11,8 +11,12 @@ fun <T> LiveData<Resource<T>>.observeResource(
 ) {
     observe(lifeCycleOwner) { resource ->
         when (resource) {
-            is Resource.Success -> onSuccess.invoke(resource.data)
-            is Resource.Error -> onError.invoke(resource.throwable)
+            is Resource.Success -> {
+                resource.data?.let(onSuccess)
+            }
+            is Resource.Error -> {
+                resource.throwable?.let(onError)
+            }
         }
     }
 }
@@ -25,9 +29,15 @@ fun <T> LiveData<Resource<T>>.observeResource(
 ) {
     observe(lifeCycleOwner) { resource ->
         when (resource) {
-            is Resource.Loading -> onLoading.invoke(resource.isLoading)
-            is Resource.Success -> onSuccess.invoke(resource.data)
-            is Resource.Error -> onError.invoke(resource.throwable)
+            is Resource.Loading -> {
+                resource.isLoading?.let(onLoading)
+            }
+            is Resource.Success -> {
+                resource.data?.let(onSuccess)
+            }
+            is Resource.Error -> {
+                resource.throwable?.let(onError)
+            }
         }
     }
 }

@@ -63,8 +63,12 @@ class RepoListFragment : BaseFragment() {
                 scrollY > oldScrollY
     }
 
-    private fun loadMore() {
-        viewModel.fetchRepoListPaged()
+    private fun loadMore() = with(viewModel) {
+        fetchReposPaged(
+            language = "language:kotlin",
+            sort = " stars",
+            page = viewModel.nextPage
+        )
     }
 
     private fun setupListRepoWithAdapter() = with(binding.rvRepos) {
@@ -73,7 +77,7 @@ class RepoListFragment : BaseFragment() {
     }
 
     override fun setupObservers() = with(viewModel) {
-        resource.observeResource(viewLifecycleOwner,
+        reposResource.observeResource(viewLifecycleOwner,
             onSuccess = { items ->
                 repoList.clear()
                 repoList.addAll(items)
@@ -100,7 +104,7 @@ class RepoListFragment : BaseFragment() {
     }
 
     override fun init() = with(viewModel) {
-        if (existsReposLoaded.not()) {
+        if (existLoadedRepos.not()) {
             loadMore()
         }
     }

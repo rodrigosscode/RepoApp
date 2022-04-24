@@ -20,35 +20,39 @@ class RepoListViewModel @Inject constructor(
     private val getRepoListPagedUseCase: GetRepoListPagedUseCase
 ) : BaseViewModel() {
 
-    private val _resource: MutableLiveData<Resource<MutableList<ItemDomain>>> = MutableLiveData(
-        Resource.Empty(mutableListOf())
-    )
-    val resource: LiveData<Resource<MutableList<ItemDomain>>> get() = _resource
+    private val _reposResource: MutableLiveData<Resource<MutableList<ItemDomain>>> =
+        MutableLiveData(Resource.Empty(mutableListOf()))
+    val reposResource: LiveData<Resource<MutableList<ItemDomain>>> get() = _reposResource
+    var existLoadedRepos: Boolean = false
+    var nextPage: Int = PagerManager.FIRST_PAGE
 
-    val existsReposLoaded: Boolean get() = _resource.value?.data?.isNotEmpty() ?: false
-
-    private val _nextPage: MutableLiveData<Int> = MutableLiveData()
-    private val nextPage: Int get() = _nextPage.value ?: PagerManager.FIRST_PAGE
-
-    fun fetchRepoListPaged(
-        language: String = "language:kotlin",
-        sort: String = "stars",
-        page: Int = nextPage
+    fun fetchReposPaged(
+        language: String,
+        sort: String,
+        page: Int
     ) = viewModelScope.launch {
-        with(_resource) {
+        with(_reposResource) {
             try {
                 loading(true)
-                val pagedRepos = getRepoListPagedUseCase(language, sort, page)
-                value?.data?.let { data ->
-                    _nextPage.value = pagedRepos.pageManager.nextPage
-                    data.addAll(pagedRepos.items)
-                    success(data)
+                getRepoListPagedUseCase(language, sort, page).let { pagedData ->
+                    addToReposLoaded(pagedData.items)?.run {
+                        existLoadedRepos = true
+                        nextPage = pagedData.pageManager.nextPage
+                        success(this)
+                    }
                 }
-            } catch (ex: Exception) {
-                error(ex)
+            } catch (e: Exception) {
+                error(e)
             } finally {
                 loading(false)
             }
         }
+    }
+
+    private fun addToReposLoaded(items: List<ItemDomain>): MutableList<ItemDomain>? {
+        _reposResource.value?.data?.let { data ->
+            data.addAll(items)
+            return data
+        } ?: return null
     }
 }

@@ -67,7 +67,7 @@ class RepoListFragment : BaseFragment() {
         fetchReposPaged(
             language = "language:kotlin",
             sort = " stars",
-            page = viewModel.nextPage
+            page = nextPage
         )
     }
 

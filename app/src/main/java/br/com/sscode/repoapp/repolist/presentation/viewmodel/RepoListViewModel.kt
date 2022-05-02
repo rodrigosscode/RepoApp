@@ -23,8 +23,12 @@ class RepoListViewModel @Inject constructor(
     private val _reposResource: MutableLiveData<Resource<MutableList<ItemDomain>>> =
         MutableLiveData(Resource.Empty(mutableListOf()))
     val reposResource: LiveData<Resource<MutableList<ItemDomain>>> get() = _reposResource
-    var existLoadedRepos: Boolean = false
-    var nextPage: Int = PagerManager.FIRST_PAGE
+
+    private var _existLoadedRepos: Boolean = false
+    val existLoadedRepos: Boolean get() =  _existLoadedRepos
+
+    private var _nextPage: Int = PagerManager.FIRST_PAGE
+    val nextPage: Int get() = _nextPage
 
     fun fetchReposPaged(
         language: String,
@@ -36,13 +40,13 @@ class RepoListViewModel @Inject constructor(
                 loading(true)
                 getRepoListPagedUseCase(language, sort, page).let { pagedData ->
                     addToReposLoaded(pagedData.items)?.run {
-                        existLoadedRepos = true
-                        nextPage = pagedData.pageManager.nextPage
+                        _existLoadedRepos = true
+                        _nextPage = pagedData.pageManager.nextPage
                         success(this)
                     }
                 }
-            } catch (e: Exception) {
-                error(e)
+            } catch (exception: Exception) {
+                error(exception)
             } finally {
                 loading(false)
             }

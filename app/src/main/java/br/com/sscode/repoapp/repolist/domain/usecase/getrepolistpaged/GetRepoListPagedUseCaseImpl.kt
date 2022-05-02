@@ -2,13 +2,14 @@ package br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged
 
 import br.com.sscode.core.feature.paging.PagerManager
 import br.com.sscode.core.feature.paging.PagingData
-import br.com.sscode.repoapp.repolist.data.repository.RepoRepository
+import br.com.sscode.repoapp.repolist.data.repository.remote.RepoRemoteRepository
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.mapper.convertResponseToDomain
 import javax.inject.Inject
 
-class GetRepoListPagedUseCaseImpl @Inject constructor(private val repository: RepoRepository) :
-    GetRepoListPagedUseCase {
+class GetRepoListPagedUseCaseImpl @Inject constructor(
+    private val repository: RepoRemoteRepository
+) : GetRepoListPagedUseCase {
 
     override suspend fun invoke(
         language: String,

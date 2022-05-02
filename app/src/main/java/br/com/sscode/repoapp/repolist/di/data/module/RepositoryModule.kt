@@ -1,15 +1,15 @@
 package br.com.sscode.repoapp.repolist.di.data.module
 
-import android.content.Context
-import br.com.sscode.repoapp.repolist.data.repository.RepoRepository
-import br.com.sscode.repoapp.repolist.data.repository.RepoRepositoryImpl
+import br.com.sscode.repoapp.repolist.data.repository.cache.RepoCacheRepository
+import br.com.sscode.repoapp.repolist.data.repository.cache.RepoCacheRepositoryImpl
+import br.com.sscode.repoapp.repolist.data.repository.remote.RepoRemoteRepository
+import br.com.sscode.repoapp.repolist.data.repository.remote.RepoRemoteRepositoryImpl
 import br.com.sscode.repoapp.repolist.data.source.local.RepoLocalDataSource
 import br.com.sscode.repoapp.repolist.data.source.remote.RepoRemoteDataSource
 import br.com.sscode.repoapp.repolist.di.data.qualifier.Cache
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -19,9 +19,13 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun providesRepository(
-        @ApplicationContext context: Context,
+    fun providesRemoteRepository(
         remoteDataSource: RepoRemoteDataSource,
+    ): RepoRemoteRepository = RepoRemoteRepositoryImpl(remoteDataSource)
+
+    @Singleton
+    @Provides
+    fun providesCacheRepository(
         @Cache localDataSource: RepoLocalDataSource
-    ): RepoRepository = RepoRepositoryImpl(context, remoteDataSource, localDataSource)
+    ): RepoCacheRepository = RepoCacheRepositoryImpl(localDataSource)
 }

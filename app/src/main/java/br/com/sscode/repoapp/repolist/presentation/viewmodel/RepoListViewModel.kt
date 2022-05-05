@@ -1,5 +1,6 @@
 package br.com.sscode.repoapp.repolist.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,15 +10,19 @@ import br.com.sscode.core.feature.paging.PagerManager
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.error
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.loading
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
+import br.com.sscode.core.util.isNetworkConnected
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
-import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCase
+import br.com.sscode.repoapp.repolist.domain.usecase.RepoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
-    private val getRepoListPagedUseCase: GetRepoListPagedUseCase
+    @ApplicationContext private val context: Context,
+    private val repoUseCase: RepoUseCase
 ) : BaseViewModel() {
 
     private val _reposResource: MutableLiveData<Resource<MutableList<ItemDomain>>> =
@@ -25,7 +30,7 @@ class RepoListViewModel @Inject constructor(
     val reposResource: LiveData<Resource<MutableList<ItemDomain>>> get() = _reposResource
 
     private var _existLoadedRepos: Boolean = false
-    val existLoadedRepos: Boolean get() =  _existLoadedRepos
+    val existLoadedRepos: Boolean get() = _existLoadedRepos
 
     private var _nextPage: Int = PagerManager.FIRST_PAGE
     val nextPage: Int get() = _nextPage
@@ -37,18 +42,31 @@ class RepoListViewModel @Inject constructor(
     ) = viewModelScope.launch {
         with(_reposResource) {
             try {
-                loading(true)
-                getRepoListPagedUseCase(language, sort, page).let { pagedData ->
-                    addToReposLoaded(pagedData.items)?.run {
-                        _existLoadedRepos = true
-                        _nextPage = pagedData.pageManager.nextPage
-                        success(this)
+//                loading(true)
+                if (context.isNetworkConnected()) {
+                    repoUseCase.getRepoListPagedUseCase(language, sort, page).let { pagedData ->
+                        addToReposLoaded(pagedData.items)?.run {
+                            _existLoadedRepos = true
+                            _nextPage = pagedData.pageManager.nextPage
+                            success(this)
+                        }?.also {
+                            repoUseCase.putRepoPageUseCase(page, pagedData)
+                        }
+                    }
+                } else {
+                    delay(2000)
+                    repoUseCase.getRepoPageUseCase(page)?.let { pagedData ->
+                        addToReposLoaded(pagedData.items)?.run {
+                            _existLoadedRepos = true
+                            _nextPage = pagedData.pageManager.nextPage
+                            success(this)
+                        }
                     }
                 }
             } catch (exception: Exception) {
                 error(exception)
             } finally {
-                loading(false)
+//                loading(false)
             }
         }
     }

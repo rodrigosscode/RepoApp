@@ -11,6 +11,7 @@ import br.com.sscode.cache.feature.pocketball.core.PocketBallCore
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import java.lang.reflect.Type
 
 abstract class PocketBallCache<T : Any>(
     private val preferencesDataStore: DataStore<Preferences>,
@@ -33,14 +34,14 @@ abstract class PocketBallCache<T : Any>(
     }
 
     @Throws(CacheException::class)
-    override suspend fun get(type: Class<T>): T? {
+    override suspend fun get(typeToConvert: Type): T? {
         var valueReturned: T? = null
         return try {
             flow {
                 if (contains()) {
                     val cryptedData = getData()
                     cryptedData?.let {
-                        valueReturned = pocketCore.decrypt(it, type)
+                        valueReturned = pocketCore.decrypt(it, typeToConvert)
                     }
                 }
                 emit(valueReturned)

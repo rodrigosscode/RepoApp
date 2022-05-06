@@ -7,9 +7,9 @@ import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.mapper.convertResponseToDomain
 import javax.inject.Inject
 
-class GetRepoListPagedUseCaseImpl @Inject constructor(
+class GetRepoPagedRemoteUseCaseImpl @Inject constructor(
     private val repository: RepoRemoteRepository
-) : GetRepoListPagedUseCase {
+) : GetRepoPagedRemoteUseCase {
 
     override suspend fun invoke(
         language: String,

@@ -3,12 +3,12 @@ package br.com.sscode.repoapp.repolist.di.domain.module
 import br.com.sscode.repoapp.repolist.data.repository.cache.RepoCacheRepository
 import br.com.sscode.repoapp.repolist.data.repository.remote.RepoRemoteRepository
 import br.com.sscode.repoapp.repolist.domain.usecase.RepoUseCase
-import br.com.sscode.repoapp.repolist.domain.usecase.cache.getrepopage.GetRepoPageUseCase
-import br.com.sscode.repoapp.repolist.domain.usecase.cache.getrepopage.GetRepoPageUseCaseImpl
-import br.com.sscode.repoapp.repolist.domain.usecase.cache.putrepopage.PutRepoPageUseCase
-import br.com.sscode.repoapp.repolist.domain.usecase.cache.putrepopage.PutRepoPageUseCaseImpl
-import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCase
-import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoListPagedUseCaseImpl
+import br.com.sscode.repoapp.repolist.domain.usecase.cache.getrepopage.GetRepoPageCacheUseCase
+import br.com.sscode.repoapp.repolist.domain.usecase.cache.getrepopage.GetRepoPageCacheUseCaseImpl
+import br.com.sscode.repoapp.repolist.domain.usecase.cache.putrepopage.PutRepoPageCacheUseCase
+import br.com.sscode.repoapp.repolist.domain.usecase.cache.putrepopage.PutRepoPageCacheUseCaseImpl
+import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoPagedRemoteUseCase
+import br.com.sscode.repoapp.repolist.domain.usecase.getrepolistpaged.GetRepoPagedRemoteUseCaseImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,29 +20,29 @@ object UseCaseModule {
 
     @Provides
     fun provideRepoUseCase(
-        getRepoListPagedUseCase: GetRepoListPagedUseCase,
-        getRepoPageUseCase: GetRepoPageUseCase,
-        putRepoPageUseCase: PutRepoPageUseCase
+        getRepoPagedRemoteUseCase: GetRepoPagedRemoteUseCase,
+        getRepoPageCacheUseCase: GetRepoPageCacheUseCase,
+        putRepoPageCacheUseCase: PutRepoPageCacheUseCase
     ): RepoUseCase {
         return RepoUseCase(
-            getRepoListPagedUseCase,
-            getRepoPageUseCase,
-            putRepoPageUseCase
+            getRepoPagedRemoteUseCase,
+            getRepoPageCacheUseCase,
+            putRepoPageCacheUseCase
         )
     }
 
     @Provides
-    fun provideGetRepoListPagedUseCase(repository: RepoRemoteRepository): GetRepoListPagedUseCase {
-        return GetRepoListPagedUseCaseImpl(repository)
+    fun provideGetRepoListPagedUseCase(repository: RepoRemoteRepository): GetRepoPagedRemoteUseCase {
+        return GetRepoPagedRemoteUseCaseImpl(repository)
     }
 
     @Provides
-    fun provideGetRepoPageUseCase(repository: RepoCacheRepository): GetRepoPageUseCase {
-        return GetRepoPageUseCaseImpl(repository)
+    fun provideGetRepoPageUseCase(repository: RepoCacheRepository): GetRepoPageCacheUseCase {
+        return GetRepoPageCacheUseCaseImpl(repository)
     }
 
     @Provides
-    fun providePutRepoPageUseCase(repository: RepoCacheRepository): PutRepoPageUseCase {
-        return PutRepoPageUseCaseImpl(repository)
+    fun providePutRepoPageUseCase(repository: RepoCacheRepository): PutRepoPageCacheUseCase {
+        return PutRepoPageCacheUseCaseImpl(repository)
     }
 }

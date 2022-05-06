@@ -7,15 +7,14 @@ import androidx.lifecycle.viewModelScope
 import br.com.sscode.core.base.data.Resource
 import br.com.sscode.core.base.viewmodel.BaseViewModel
 import br.com.sscode.core.feature.paging.PagerManager
+import br.com.sscode.core.feature.paging.PagingData
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.error
-import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.loading
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
 import br.com.sscode.core.util.isNetworkConnected
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.RepoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,29 +43,33 @@ class RepoListViewModel @Inject constructor(
             try {
 //                loading(true)
                 if (context.isNetworkConnected()) {
-                    repoUseCase.getRepoListPagedUseCase(language, sort, page).let { pagedData ->
-                        addToReposLoaded(pagedData.items)?.run {
-                            _existLoadedRepos = true
-                            _nextPage = pagedData.pageManager.nextPage
-                            success(this)
-                        }?.also {
-                            repoUseCase.putRepoPageUseCase(page, pagedData)
-                        }
+                    repoUseCase.getRepoPagedRemoteUseCase(language, sort, page).run {
+                        onSuccessFetchReposPaged(this, page)
                     }
                 } else {
-                    delay(2000)
-                    repoUseCase.getRepoPageUseCase(page)?.let { pagedData ->
-                        addToReposLoaded(pagedData.items)?.run {
-                            _existLoadedRepos = true
-                            _nextPage = pagedData.pageManager.nextPage
-                            success(this)
-                        }
+                    repoUseCase.getRepoPageCacheUseCase(page)?.run {
+                        onSuccessFetchReposPaged(this, page)
                     }
                 }
             } catch (exception: Exception) {
                 error(exception)
             } finally {
 //                loading(false)
+            }
+        }
+    }
+
+    private suspend fun onSuccessFetchReposPaged(
+        pagedData: PagingData<ItemDomain>,
+        page: Int
+    ) {
+        with(_reposResource) {
+            addToReposLoaded(pagedData.items)?.run {
+                _existLoadedRepos = true
+                _nextPage = pagedData.pageManager.nextPage
+                success(this)
+            }?.also {
+                repoUseCase.putRepoPageCacheUseCase(page, pagedData)
             }
         }
     }

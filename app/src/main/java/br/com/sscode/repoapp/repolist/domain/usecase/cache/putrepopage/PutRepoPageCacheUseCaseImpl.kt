@@ -5,9 +5,9 @@ import br.com.sscode.repoapp.repolist.data.repository.cache.RepoCacheRepository
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import javax.inject.Inject
 
-class PutRepoPageUseCaseImpl @Inject constructor(
+class PutRepoPageCacheUseCaseImpl @Inject constructor(
     private val repository: RepoCacheRepository
-) : PutRepoPageUseCase {
+) : PutRepoPageCacheUseCase {
 
     override suspend fun invoke(page: Int, repoPage: PagingData<ItemDomain>) =
         repository.putRepoPage(page, repoPage)

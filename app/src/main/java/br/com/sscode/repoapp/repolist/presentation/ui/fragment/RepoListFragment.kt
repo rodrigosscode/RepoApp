@@ -83,11 +83,12 @@ class RepoListFragment : BaseFragment() {
                 repoList.addAll(items)
                 repoAdapter.notifyDataSetChanged()
             },
-            onLoading = ::setupLoading,
             onError = { error ->
                 error.printStackTrace()
             }
         )
+
+        isLoading.observe(viewLifecycleOwner, this@RepoListFragment::setupLoading)
     }
 
     private fun setupLoading(isLoading: Boolean) = with(binding) {

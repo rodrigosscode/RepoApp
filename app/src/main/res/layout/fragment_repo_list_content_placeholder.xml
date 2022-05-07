@@ -2,17 +2,17 @@
 <com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
     android:orientation="vertical"
     android:visibility="gone"
-    tools:visibility="visible"
-    app:shimmer_direction="top_to_bottom"
-    app:shimmer_shape="linear"
     app:layout_constraintTop_toBottomOf="@id/rv_repos"
     app:shimmer_auto_start="false"
-    app:shimmer_duration="3000">
+    app:shimmer_direction="left_to_right"
+    app:shimmer_duration="3000"
+    app:shimmer_intensity="0.01"
+    tools:visibility="visible">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"

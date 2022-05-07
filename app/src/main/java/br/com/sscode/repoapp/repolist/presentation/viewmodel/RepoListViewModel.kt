@@ -15,6 +15,7 @@ import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.RepoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,6 +28,9 @@ class RepoListViewModel @Inject constructor(
     private val _reposResource: MutableLiveData<Resource<MutableList<ItemDomain>>> =
         MutableLiveData(Resource.Empty(mutableListOf()))
     val reposResource: LiveData<Resource<MutableList<ItemDomain>>> get() = _reposResource
+
+    private var _isLoading: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private var _existLoadedRepos: Boolean = false
     val existLoadedRepos: Boolean get() = _existLoadedRepos
@@ -41,35 +45,45 @@ class RepoListViewModel @Inject constructor(
     ) = viewModelScope.launch {
         with(_reposResource) {
             try {
-//                loading(true)
+                _isLoading.postValue(true)
                 if (context.isNetworkConnected()) {
                     repoUseCase.getRepoPagedRemoteUseCase(language, sort, page).run {
                         onSuccessFetchReposPaged(this, page)
+                        repoUseCase.putRepoPageCacheUseCase(page, this)
+                        delay(1000)
                     }
                 } else {
                     repoUseCase.getRepoPageCacheUseCase(page)?.run {
-                        onSuccessFetchReposPaged(this, page)
+                        onSuccessFetchReposPaged(this, page, true)
                     }
+                }
+
+                value?.data?.run {
+                    success(this)
                 }
             } catch (exception: Exception) {
                 error(exception)
             } finally {
-//                loading(false)
+                _isLoading.postValue(false)
             }
         }
     }
 
     private suspend fun onSuccessFetchReposPaged(
         pagedData: PagingData<ItemDomain>,
-        page: Int
+        page: Int,
+        fromCache: Boolean = false
     ) {
+        // verificar putcase
         with(_reposResource) {
             addToReposLoaded(pagedData.items)?.run {
                 _existLoadedRepos = true
                 _nextPage = pagedData.pageManager.nextPage
-                success(this)
+//                success(this)
             }?.also {
-                repoUseCase.putRepoPageCacheUseCase(page, pagedData)
+                if (!fromCache) {
+//                    repoUseCase.putRepoPageCacheUseCase(page, pagedData)
+                }
             }
         }
     }

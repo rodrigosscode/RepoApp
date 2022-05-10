@@ -24,7 +24,6 @@ ext {
     coroutinesVersion = "1.6.0-native-mt"
     lifecycleVersion = "2.5.0-alpha03"
     navigationVersion = "2.4.1"
-    pagingVersion = "3.1.1"
     retrofitVersion = "2.9.0"
     dataStoreVersion = "1.0.0"
     androidTestCoreVersion = "1.4.0"

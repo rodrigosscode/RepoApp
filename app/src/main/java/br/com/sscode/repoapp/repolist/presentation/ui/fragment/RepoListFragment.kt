@@ -8,23 +8,21 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.sscode.core.base.ui.fragment.BaseFragment
+import br.com.sscode.core.base.ui.fragment.extension.hasNetworkConnection
 import br.com.sscode.core.feature.viewmodel.resourceobserver.livedata.observeResource
 import br.com.sscode.repoapp.databinding.FragmentRepoListBinding
-import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.presentation.ui.adapter.recyclerview.RepoListAdapter
 import br.com.sscode.repoapp.repolist.presentation.viewmodel.RepoListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class RepoListFragment : BaseFragment() {
 
     private lateinit var binding: FragmentRepoListBinding
     private var isLoadingRepos: Boolean = false
-    private val repoList: MutableList<ItemDomain> by lazy {
-        mutableListOf()
-    }
     private val repoAdapter: RepoListAdapter by lazy {
-        RepoListAdapter(requireContext(), repoList) {}
+        RepoListAdapter {}
     }
 
     private val viewModel: RepoListViewModel by viewModels()
@@ -64,11 +62,15 @@ class RepoListFragment : BaseFragment() {
     }
 
     private fun loadMore() = with(viewModel) {
-        fetchReposPaged(
-            language = "language:kotlin",
-            sort = " stars",
-            page = nextPage
-        )
+        if (hasNetworkConnection()) {
+            fetchReposPagedFromRemote(
+                language = "language:kotlin",
+                sort = " stars",
+                page = nextPage
+            )
+        } else {
+            fetchReposPagedFromCache(nextPage)
+        }
     }
 
     private fun setupListRepoWithAdapter() = with(binding.rvRepos) {
@@ -77,18 +79,16 @@ class RepoListFragment : BaseFragment() {
     }
 
     override fun setupObservers() = with(viewModel) {
-        reposResource.observeResource(viewLifecycleOwner,
+        reposResource.observeResource(
+            viewLifecycleOwner,
             onSuccess = { items ->
-                repoList.clear()
-                repoList.addAll(items)
-                repoAdapter.notifyDataSetChanged()
+                repoAdapter.submitData(items)
             },
             onError = { error ->
                 error.printStackTrace()
-            }
+            },
+            onLoading = this@RepoListFragment::setupLoading
         )
-
-        isLoading.observe(viewLifecycleOwner, this@RepoListFragment::setupLoading)
     }
 
     private fun setupLoading(isLoading: Boolean) = with(binding) {

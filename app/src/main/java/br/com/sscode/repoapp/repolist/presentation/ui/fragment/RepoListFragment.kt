@@ -52,25 +52,27 @@ class RepoListFragment : BaseFragment() {
         )
     }
 
+    override fun onDestroyView() {
+        viewModel.setScrollState(binding.root.scrollY)
+        super.onDestroyView()
+    }
+
     private fun isEndOfList(
         scrollY: Int,
         view: NestedScrollView,
         oldScrollY: Int
-    ) = with(binding) {
+    ): Boolean = with(binding) {
         (scrollY >= (rvRepos.measuredHeight - view.measuredHeight)) &&
                 scrollY > oldScrollY
     }
 
     private fun loadMore() = with(viewModel) {
-        if (hasNetworkConnection()) {
-            fetchReposPagedFromRemote(
-                language = "language:kotlin",
-                sort = " stars",
-                page = nextPage
-            )
-        } else {
-            fetchReposPagedFromCache(nextPage)
-        }
+        fetchReposPage(
+            isNetworkConnected = hasNetworkConnection(),
+            language = "language:kotlin",
+            sort = " stars",
+            page = nextPage
+        )
     }
 
     private fun setupListRepoWithAdapter() = with(binding.rvRepos) {
@@ -89,6 +91,16 @@ class RepoListFragment : BaseFragment() {
             },
             onLoading = this@RepoListFragment::setupLoading
         )
+        scrollState.observe(
+            viewLifecycleOwner,
+            this@RepoListFragment::restoreScrollPositionView
+        )
+    }
+
+    private fun restoreScrollPositionView(stateScrollY: Int) = with(binding) {
+        rvRepos.post {
+            root.scrollY = stateScrollY
+        }
     }
 
     private fun setupLoading(isLoading: Boolean) = with(binding) {

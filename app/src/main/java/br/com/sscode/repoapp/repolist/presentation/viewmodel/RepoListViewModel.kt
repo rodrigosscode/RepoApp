@@ -12,13 +12,15 @@ import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.loa
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.RepoUseCase
+import br.com.sscode.repoapp.repolist.domain.usecase.network.GetFromCacheOrRemoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
-    private val repoUseCase: RepoUseCase
+    private val repoUseCase: RepoUseCase,
+    private val getFromCacheOrRemoteUseCase: GetFromCacheOrRemoteUseCase<PagingData<ItemDomain>>
 ) : BaseViewModel() {
 
     private val _reposResource: MutableLiveData<Resource<MutableList<ItemDomain>>> =
@@ -31,7 +33,11 @@ class RepoListViewModel @Inject constructor(
     private var _nextPage: Int = PagerManager.FIRST_PAGE
     val nextPage: Int get() = _nextPage
 
-    fun fetchReposPagedFromRemote(
+    private var _scrollState: MutableLiveData<Int> = MutableLiveData()
+    val scrollState: LiveData<Int> get() = _scrollState
+
+    fun fetchReposPage(
+        isNetworkConnected: Boolean,
         language: String,
         sort: String,
         page: Int
@@ -39,35 +45,23 @@ class RepoListViewModel @Inject constructor(
         with(_reposResource) {
             try {
                 loading(true)
-                repoUseCase.getRepoPagedRemoteUseCase(language, sort, page).run {
-                    repoUseCase.putRepoPageCacheUseCase(page, this)
-                    onSuccessFetchReposPaged(this)
-                }.also { currentWithNewRepos ->
-                    loading(false)
-                    currentWithNewRepos?.let {
-                        success(it)
+                getFromCacheOrRemoteUseCase(
+                    isRefresh = isNetworkConnected,
+                    getRemoteCall = {
+                        repoUseCase.getRepoPageRemoteUseCase(language, sort, page)
+                    },
+                    onGetRemoteCallSuccess = { page ->
+                        repoUseCase.putRepoPageCacheUseCase(page.pageManager.currentPage, page)
+                    },
+                    getCacheCall = {
+                        repoUseCase.getRepoPageCacheUseCase(page)
                     }
-                }
-            } catch (exception: Exception) {
-                loading(false)
-                error(exception)
-            }
-        }
-    }
-
-    fun fetchReposPagedFromCache(
-        page: Int
-    ) = viewModelScope.launch {
-        with(_reposResource) {
-            try {
-                loading(true)
-                repoUseCase.getRepoPageCacheUseCase(page)?.run {
-                    onSuccessFetchReposPaged(this)
-                }.also { currentWithNewRepos ->
+                ).let { pageReturned ->
                     loading(false)
-
-                    currentWithNewRepos?.let {
-                        success(it)
+                    pageReturned?.run {
+                        onSuccessFetchReposPaged(this)?.run {
+                            success(this)
+                        }
                     }
                 }
             } catch (exception: Exception) {
@@ -92,5 +86,9 @@ class RepoListViewModel @Inject constructor(
             data.addAll(items)
             return data
         } ?: return null
+    }
+
+    fun setScrollState(scrollY: Int) {
+        _scrollState.value = scrollY
     }
 }

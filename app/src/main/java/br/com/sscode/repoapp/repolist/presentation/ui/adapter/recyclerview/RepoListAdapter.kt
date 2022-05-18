@@ -2,6 +2,7 @@ package br.com.sscode.repoapp.repolist.presentation.ui.adapter.recyclerview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.ViewGroupCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -49,13 +50,24 @@ class RepoListAdapter(
     inner class Holder(private val binding: ItemRepoListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            ViewGroupCompat.setTransitionGroup(itemView as ViewGroup, true)
+        }
+
         fun bind(item: ItemDomain) = with(binding) {
+            loadDataInViews(item)
+            setListeners(item)
+        }
+
+        private fun loadDataInViews(item: ItemDomain) = with(binding) {
             Glide.with(itemView).load(item.owner.avatarUrl).into(ivItemAuthorPhoto)
             tvItemRepoName.text = item.name
             tvItemAuthorName.text = item.owner.login
             tvItemCountRating.text = item.stargazersCount.toString()
             tvItemCountForks.text = item.forksCount.toString()
+        }
 
+        private fun setListeners(item: ItemDomain) = with(binding) {
             root.setOnClickListener {
                 onItemClick.invoke(item)
             }

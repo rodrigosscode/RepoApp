@@ -33,8 +33,8 @@ class RepoListViewModel @Inject constructor(
     private var _nextPage: Int = PagerManager.FIRST_PAGE
     val nextPage: Int get() = _nextPage
 
-    private var _scrollState: MutableLiveData<Int> = MutableLiveData()
-    val scrollState: LiveData<Int> get() = _scrollState
+    private var _scrollStateY: MutableLiveData<Int> = MutableLiveData()
+    val scrollStateY: LiveData<Int> get() = _scrollStateY
 
     fun fetchReposPage(
         isNetworkConnected: Boolean,
@@ -89,6 +89,6 @@ class RepoListViewModel @Inject constructor(
     }
 
     fun setScrollState(scrollY: Int) {
-        _scrollState.value = scrollY
+        _scrollStateY.value = scrollY
     }
 }

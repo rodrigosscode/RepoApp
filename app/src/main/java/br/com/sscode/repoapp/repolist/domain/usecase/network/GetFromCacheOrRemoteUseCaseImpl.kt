@@ -7,16 +7,16 @@ class GetFromCacheOrRemoteUseCaseImpl : GetFromCacheOrRemoteUseCase<PagingData<I
 
     override suspend fun invoke(
         isRefresh: Boolean,
-        getRemoteCall: suspend () -> PagingData<ItemDomain>,
-        onGetRemoteCallSuccess: suspend (PagingData<ItemDomain>) -> Unit,
-        getCacheCall: suspend () -> PagingData<ItemDomain>?
+        getFromRemoteCall: suspend () -> PagingData<ItemDomain>,
+        onGetFromRemoteCallSuccess: suspend (PagingData<ItemDomain>) -> Unit,
+        getFromCacheCall: suspend () -> PagingData<ItemDomain>?
     ): PagingData<ItemDomain>? {
         return if (isRefresh) {
-            val returnRemoteCall = getRemoteCall.invoke()
-            onGetRemoteCallSuccess.invoke(returnRemoteCall)
+            val returnRemoteCall = getFromRemoteCall.invoke()
+            onGetFromRemoteCallSuccess.invoke(returnRemoteCall)
             returnRemoteCall
         } else {
-            getCacheCall.invoke()
+            getFromCacheCall.invoke()
         }
     }
 }

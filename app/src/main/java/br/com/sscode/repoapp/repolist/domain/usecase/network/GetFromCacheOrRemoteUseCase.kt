@@ -4,8 +4,8 @@ interface GetFromCacheOrRemoteUseCase<T> {
 
     suspend operator fun invoke(
         isRefresh: Boolean,
-        getRemoteCall: suspend () -> T,
-        onGetRemoteCallSuccess: suspend (T) -> Unit,
-        getCacheCall: suspend  () -> T?
+        getFromRemoteCall: suspend () -> T,
+        onGetFromRemoteCallSuccess: suspend (T) -> Unit,
+        getFromCacheCall: suspend  () -> T?
     ): T?
 }

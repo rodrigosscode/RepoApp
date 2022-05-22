@@ -45,18 +45,20 @@ class RepoListViewModel @Inject constructor(
         with(_reposResource) {
             try {
                 loading(true)
-                getFromCacheOrRemoteUseCase(
-                    isRefresh = isNetworkConnected,
-                    getRemoteCall = {
-                        repoUseCase.getRepoPageRemoteUseCase(language, sort, page)
-                    },
-                    onGetRemoteCallSuccess = { page ->
-                        repoUseCase.putRepoPageCacheUseCase(page.pageManager.currentPage, page)
-                    },
-                    getCacheCall = {
-                        repoUseCase.getRepoPageCacheUseCase(page)
-                    }
-                ).let { pageReturned ->
+                with(repoUseCase) {
+                    getFromCacheOrRemoteUseCase(
+                        isRefresh = isNetworkConnected,
+                        getFromRemoteCall = {
+                            getRepoPageRemoteUseCase(language, sort, page)
+                        },
+                        onGetFromRemoteCallSuccess = { page ->
+                            putRepoPageCacheUseCase(page.pageManager.currentPage, page)
+                        },
+                        getFromCacheCall = {
+                            getRepoPageCacheUseCase(page)
+                        }
+                    )
+                }.let { pageReturned ->
                     loading(false)
                     pageReturned?.run {
                         onSuccessFetchReposPaged(this)?.run {

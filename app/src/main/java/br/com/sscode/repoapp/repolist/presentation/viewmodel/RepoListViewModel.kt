@@ -10,17 +10,21 @@ import br.com.sscode.core.feature.paging.PagingData
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.error
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.loading
 import br.com.sscode.core.feature.viewmodel.resourceobserver.mutablelivedata.success
+import br.com.sscode.repoapp.repolist.di.data.qualifier.IoDispatcher
 import br.com.sscode.repoapp.repolist.domain.entity.ItemDomain
 import br.com.sscode.repoapp.repolist.domain.usecase.RepoUseCase
 import br.com.sscode.repoapp.repolist.domain.usecase.network.GetFromCacheOrRemoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class RepoListViewModel @Inject constructor(
     private val repoUseCase: RepoUseCase,
-    private val getFromCacheOrRemoteUseCase: GetFromCacheOrRemoteUseCase<PagingData<ItemDomain>>
+    private val getFromCacheOrRemoteUseCase: GetFromCacheOrRemoteUseCase<PagingData<ItemDomain>>,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel() {
 
     private val _reposResource: MutableLiveData<Resource<MutableList<ItemDomain>>> =
@@ -46,18 +50,20 @@ class RepoListViewModel @Inject constructor(
             try {
                 loading(true)
                 with(repoUseCase) {
-                    getFromCacheOrRemoteUseCase(
-                        isRefresh = isNetworkConnected,
-                        getFromRemoteCall = {
-                            getRepoPageRemoteUseCase(language, sort, page)
-                        },
-                        onGetFromRemoteCallSuccess = { page ->
-                            putRepoPageCacheUseCase(page.pageManager.currentPage, page)
-                        },
-                        getFromCacheCall = {
-                            getRepoPageCacheUseCase(page)
-                        }
-                    )
+                    withContext(dispatcher) {
+                        getFromCacheOrRemoteUseCase(
+                            isRefresh = isNetworkConnected,
+                            getFromRemoteCall = {
+                                getRepoPageRemoteUseCase(language, sort, page)
+                            },
+                            onGetFromRemoteCallSuccess = { page ->
+                                putRepoPageCacheUseCase(page.pageManager.currentPage, page)
+                            },
+                            getFromCacheCall = {
+                                getRepoPageCacheUseCase(page)
+                            }
+                        )
+                    }
                 }.let { pageReturned ->
                     loading(false)
                     pageReturned?.run {
